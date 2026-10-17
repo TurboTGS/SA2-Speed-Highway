@@ -43,7 +43,20 @@ enum SADXLevelIDs {
 	LevelIDs_ChaoRace,
 };
 
-void SpeedHighway_Hook();
+// Speed Highway borrows Radical Highway's slot while it is played.
+// SpeedHighway_Init_Stock saves the stock level header (call once at Init);
+// Apply swaps Speed Highway in, Revert puts Radical Highway back.
+void SpeedHighway_SaveStock();
+void SpeedHighway_Apply();
+void SpeedHighway_Revert();
+// Without the SA2 2P mod: apply for good (replaces Radical Highway), including
+// the positions and files the 2P mod would otherwise handle.
+void SpeedHighway_ApplyStandalone(const char* modPath);
+// Data handed to the 2P mod through the stage API.
+const StartPosition* SpeedHighway_StartPos();
+const StartPosition* SpeedHighway_EndPos();
+const LevelEndPosition* SpeedHighway_2PIntro();
+const LevelEndPosition* SpeedHighway_EndPos23();
 void LoadSH_DeathZonesModel();
 void FreeDZModels();
 void LoadSH_DeathZones(int act);

@@ -337,8 +337,55 @@ static void __cdecl SpeedHighway_Init()
 
 static const LevelHeader speedHighwayModule = { "SPDHIGH", 0, SpeedHighway_Init, SpeedHighway_Free, SpeedHighway_Main };
 
-void SpeedHighway_Hook()
+static LevelHeader stockRadicalHighwayHeader;
+
+void SpeedHighway_SaveStock()
 {
-	RadicalHighwayHeader = speedHighwayModule;
-	SetStartEndPoints(&sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
+	stockRadicalHighwayHeader = RadicalHighwayHeader;
 }
+
+void SpeedHighway_Apply()
+{
+	if (g_speedHighwayActive)
+		return;
+
+	g_speedHighwayActive = true;
+	CurrentAct = 0;
+	RadicalHighwayHeader = speedHighwayModule;
+}
+
+void SpeedHighway_Revert()
+{
+	if (!g_speedHighwayActive)
+		return;
+
+	RadicalHighwayHeader = stockRadicalHighwayHeader;
+	CurrentSADXLevel = -1; // none: Sonic_Main_r checks it
+	CurrentAct = 0;
+	g_speedHighwayActive = false;
+}
+
+// Files that replace stock Radical Highway data (in stage14\, mirroring gd_PC).
+static const char* const stage14Files[] = {
+	"Message\\missione.prs",
+	"MLT\\se_ac_rh\\5.csb",
+	"MLT\\se_ac_rh\\6.csb",
+};
+
+void SpeedHighway_ApplyStandalone(const char* modPath)
+{
+	SpeedHighway_Apply();
+	SetStartEndPoints(&sh_startpos, &sh_2pintro, &sh_endpos, &sh_endpos23);
+
+	for (const char* file : stage14Files)
+	{
+		const std::string game = std::string("resource\\gd_PC\\") + file;
+		const std::string mod = std::string(modPath) + "\\stage14\\" + file;
+		HelperFunctionsGlobal.ReplaceFile(game.c_str(), mod.c_str());
+	}
+}
+
+const StartPosition* SpeedHighway_StartPos() { return &sh_startpos; }
+const StartPosition* SpeedHighway_EndPos() { return &sh_endpos; }
+const LevelEndPosition* SpeedHighway_2PIntro() { return &sh_2pintro; }
+const LevelEndPosition* SpeedHighway_EndPos23() { return &sh_endpos23; }

@@ -1,5 +1,7 @@
 #pragma once
 
+// True only while Speed Highway is the active level (see SpeedHighway_Apply).
+extern bool g_speedHighwayActive;
 bool isSADXLevel();
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius);

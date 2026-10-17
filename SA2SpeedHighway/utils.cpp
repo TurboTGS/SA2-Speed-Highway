@@ -2,8 +2,17 @@
 
 static const int SADXLevel[2] = { LevelIDs_RadicalHighway, NULL };
 
+bool g_speedHighwayActive = false;
+
 bool isSADXLevel()
 {
+	// Radical Highway is the host level: outside a Speed Highway match it is the
+	// stock level and none of the SADX fixes may apply to it.
+	if (!g_speedHighwayActive)
+	{
+		return false;
+	}
+
 	for (int i = 0; i < LengthOfArray(SADXLevel); i++)
 	{
 		if (CurrentLevel == SADXLevel[i])
