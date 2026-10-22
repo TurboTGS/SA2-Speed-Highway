@@ -1,5 +1,5 @@
 /*
- * SA2 2P stage API (SA2_1P_in_2P mod), version 4.
+ * SA2 2P stage API (SA2_1P_in_2P mod), version 6.
  *
  * Lets a level mod add its level to the 2P battle stage select WITHOUT
  * replacing a stock level and without being bundled with the 2P mod. A mod
@@ -40,6 +40,10 @@
  *       d.activate = MyApply;        d.deactivate = MyRevert; // optional
  *       d.character = 0;             // v4: 1P Stage Select character (Sonic)
  *       d.missions = 1;              // v4: 1P missions (0 = none)
+ *       d.emblems = -1;              // v5: emblems (-1 = one per mission)
+ *       // v6: mission 1 ranks D, C, B, A by points; mission 2 by seconds
+ *       d.rankRequirements[0][0] = 4000;  ...  d.rankRequirements[0][3] = 16000;
+ *       d.rankRequirements[1][0] = 300;   ...  d.rankRequirements[1][3] = 120;
  *       api->AddStage(&d);
  *   }
  *
@@ -59,7 +63,7 @@
 #ifndef SA2_2P_API_H
 #define SA2_2P_API_H
 
-#define SA2TP_API_VERSION 4
+#define SA2TP_API_VERSION 6
 
 /* Level IDs a stage can claim with levelId (version 3). Pick one and keep it:
    your file names depend on it. Taken IDs are rejected. */
@@ -139,6 +143,28 @@ typedef struct SA2TP_StageDesc {
        100 rings, 3: the lost Chao, 4: time limit, 5: hard mode). Descriptors
        older than version 4: 0. */
     int missions;
+
+    /* ---- version 5 ---- */
+    /* How many emblems the stage awards in 1P (0..5): clearing mission n
+       (1-based, n <= emblems) earns emblem n. They're counted per stage on
+       the Custom page, separate from the game's own emblem total. -1 = one
+       per mission (also for older descriptors). */
+    int emblems;
+
+    /* ---- version 6 ---- */
+    /* Rank requirements for the 1P result screen, per mission (index 0..4 =
+       missions 1..5), for D, C, B and A in that order. The rank starts at E
+       and goes up one step per requirement met, stopping at the first one
+       that isn't (as the stock game ranks).
+         Missions 1, 4, 5 (score): the least points (score + time bonus),
+           rising, e.g. {4000, 8000, 12000, 16000}. Collecting every ring is
+           an A anyway, as in the stock game.
+         Missions 2, 3 (time): the slowest clear time in whole seconds,
+           falling, e.g. {300, 240, 180, 120} = 5:00, 4:00, 3:00, 2:00.
+       All four 0 (also for older descriptors) = the host level's stock
+       requirements for that mission. Requirements out of order are ignored
+       (logged). */
+    int rankRequirements[5][4];
 } SA2TP_StageDesc;
 
 typedef struct SA2TP_API {

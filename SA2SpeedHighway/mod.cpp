@@ -46,6 +46,17 @@ extern "C"
 		// Highway's character (Shadow); missions 1 (goal) and 2 (100 rings).
 		d.character = -1;
 		d.missions = 2;
+		// API v6: rank requirements for D, C, B, A (example values).
+		// Older 2P mods ignore them (they go by the descriptor's size).
+		// Mission 1: least points (score + time bonus).
+		// Mission 2 (100 rings): slowest time in seconds.
+		const int m1[4] = { 7000, 10000, 13000, 16000 };
+		const int m2[4] = { 330, 270, 210, 170 }; // 5:30, 4:30, 3:30, 2:50
+		for (int k = 0; k < 4; ++k)
+		{
+			d.rankRequirements[0][k] = m1[k];
+			d.rankRequirements[1][k] = m2[k];
+		}
 		registeredWith2P = api->AddStage(&d) != 0;
 	}
 
