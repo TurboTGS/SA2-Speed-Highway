@@ -42,6 +42,10 @@ extern "C"
 		d.endPosition = SpeedHighway_EndPos();
 		d.intro2P = SpeedHighway_2PIntro();
 		d.end23 = SpeedHighway_EndPos23();
+		// API v4: the 1P Stage Select's Custom page. Played as Radical
+		// Highway's character (Shadow); missions 1 (goal) and 2 (100 rings).
+		d.character = -1;
+		d.missions = 2;
 		registeredWith2P = api->AddStage(&d) != 0;
 	}
 
