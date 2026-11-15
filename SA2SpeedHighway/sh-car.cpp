@@ -18,7 +18,7 @@ void Init_SH_Car(ObjectMaster* obj) {
     CarLight.p.y = 0.0;
     CarLight.p.z = 0.0;
     data->NextAction = 0;
-    data->field_6 = 0;
+    data->Timer = 0;
     obj->Data2.Undefined = obj->Child;
     obj->DeleteSub = j_DeleteChildObjects;
     //obj->MainSub = CarManager_Main;

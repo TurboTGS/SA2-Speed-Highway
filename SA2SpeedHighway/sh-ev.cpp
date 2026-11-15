@@ -67,7 +67,7 @@ void OEv_SetFlag(ObjectMaster* obj) {
 	item->pos[1] = data->Position.y;
 	item->pos[2] = data->Position.z;
 
-	if (IsPlayerInsideSphere(&data->Position, 170.0f))
+	if (SH_IsPlayerInsideSphere(&data->Position, 170.0f))
 	{
 		data->Status |= 0x100u;
 	}
@@ -100,7 +100,7 @@ void __cdecl OEv_ChildDisplay(ObjectMaster* a1)
 	}
 	DrawChunkModel(getChildObj->getchunkmodel());
 	njPushMatrix(0);
-	timer = data->field_6;
+	timer = data->Timer;
 	if (timer)
 	{
 		njRotateZ(0, timer);
@@ -108,7 +108,7 @@ void __cdecl OEv_ChildDisplay(ObjectMaster* a1)
 	DrawChunkModel(child->getchunkmodel());
 	njPopMatrix(1u);
 	njPushMatrix(0);
-	timer2 = data->field_6;
+	timer2 = data->Timer;
 	sibling = child->sibling;
 	if (timer2)
 	{
@@ -220,7 +220,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				data->Action = 3;
 				break;
 			}
-			data->field_6 += 256;
+			data->Timer += 256;
 			OEv_SetFlag(a2);
 
 		}
@@ -288,7 +288,7 @@ void __cdecl SH_EVChild(ObjectMaster* a2)
 				data->Action = 3;
 				break;
 			}
-			data->field_6 -= 256;
+			data->Timer -= 256;
 			OEv_SetFlag(a2);
 
 		}
@@ -328,7 +328,7 @@ void __cdecl OEv(ObjectMaster* obj)
 	EntityData1* data; // esi
 	Angle v2; // eax
 	int* v4; // ecx
-	Vector3 a2; // [esp+8h] [ebp-30h] BYREF
+	NJS_VECTOR a2; // [esp+8h] [ebp-30h] BYREF
 	NJS_VECTOR a3;
 
 

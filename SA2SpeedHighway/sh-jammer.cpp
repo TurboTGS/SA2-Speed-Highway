@@ -27,9 +27,9 @@ void JammerChangeTex(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 
-	if (++data->field_6 > 0x19u)
+	if (++data->Timer > 0x19u)
 	{
-		data->field_6 = 0;
+		data->Timer = 0;
 
 		if (data->NextAction)
 		{
@@ -64,7 +64,7 @@ void ObjectJammer(ObjectMaster* obj)
 	{
 		if (data->Action == 1)
 		{
-			if (IsPlayerInsideSphere(&data->Position, 33.0f))
+			if (SH_IsPlayerInsideSphere(&data->Position, 33.0f))
 			{
 				data->Status | 0x100;
 			}

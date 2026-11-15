@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 
 //ALL THIS GIANT MESS FOR A STUPID TRASH THAT YOU CAN BREAK, WTF.
 
@@ -430,7 +430,7 @@ void setTankLadder(ObjectMaster* obj)
 	ObjectMaster* child; // eax
 	EntityData1* childData; // edi
 
-	Vector3 a2; // [esp+8h] [ebp-18h] BYREF
+	NJS_VECTOR a2; // [esp+8h] [ebp-18h] BYREF
 
 	data = obj->Data1.Entity;
 	child = LoadChildObject(LoadObj_Data1, tankladder_Main, obj);

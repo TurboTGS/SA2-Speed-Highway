@@ -51,12 +51,12 @@ void __cdecl OTokei_Main(ObjectMaster* a1)
 			data->Action = 1;
 			break;
 		case 1:
-			data->field_6 += 1024;
-			a1->Data2.Entity->SpeedAngle.x = unsigned __int64(njSin((unsigned __int16)data->field_6) * 896.0);
+			data->Timer += 1024;
+			a1->Data2.Entity->SpeedAngle.x = unsigned __int64(njSin((unsigned __int16)data->Timer) * 896.0);
 			v6 = data->Status;
 			if ((v6 & 0x100) != 0)
 			{
-				v7 = data->field_6;
+				v7 = data->Timer;
 				if ((unsigned __int16)v7 <= 0xC000u)
 				{
 					if ((v7 & 0x7FFF) == 0)
@@ -69,7 +69,7 @@ void __cdecl OTokei_Main(ObjectMaster* a1)
 			}
 			else
 			{
-				v7 = data->field_6;
+				v7 = data->Timer;
 				if ((unsigned __int16)v7 <= 0x4000u)
 				{
 					//playsound
@@ -92,7 +92,7 @@ void __cdecl OTokei(ObjectMaster* obj)
 	EntityData1* data = obj->Data1.Entity;
 	InitCollision(obj, TokeiCol, 3, 4u);
 	data->Status &= 0xFEu;
-	data->field_6 = 0;
+	data->Timer = 0;
 	obj->MainSub = OTokei_Main;
 }
 

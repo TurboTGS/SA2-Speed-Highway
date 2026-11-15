@@ -35,17 +35,17 @@ void __cdecl ByeByeGlass(ObjectMaster* obj)
 	ObjectMaster* thisa; // [esp+10h] [ebp+4h]
 
 	v2 = obj->Data1.Entity;
-	v3 = v2->field_6;
+	v3 = v2->Timer;
 	if ((unsigned __int16)v3 <= 0xC8u)
 	{
 		v4 = (unsigned __int64)(v2->field_2 * 25.0 * 65536.0 * 0.002777777777777778);
 		v5 = v4;
 		if (v2->Index == 2)
 		{
-			v2->field_6 = v3 + 1;
+			v2->Timer = v3 + 1;
 			v2->Position.x = njCos(v4) * 0.5 + v2->Position.x;
 			v6 = njSin(v5);
-			thisa = (ObjectMaster*)(unsigned __int16)v2->field_6;
+			thisa = (ObjectMaster*)(unsigned __int16)v2->Timer;
 			v2->Position.z = v6 * 0.5 + v2->Position.z;
 			v2->Position.y = ((v2->field_2 + 1.0) * 1.3 - (double)(int)thisa * 0.0625) * 0.5 + v2->Position.y;
 			v7 = (unsigned __int64)(v2->Scale.x * 65536.0 * 0.002777777777777778);
@@ -54,7 +54,7 @@ void __cdecl ByeByeGlass(ObjectMaster* obj)
 		else
 		{
 			v9 = v2->Scale.x * 0.1;
-			v2->field_6 = v3 + 1;
+			v2->Timer = v3 + 1;
 			v2->Position.y = v9 - (double)(unsigned __int16)(v3 + 1) * 0.0625 + v2->Position.y;
 			v2->Position.x = njCos(v4) * 0.81 + v2->Position.x;
 			v2->Position.z = njSin(v5) * 0.81 + v2->Position.z;
@@ -83,7 +83,7 @@ void __cdecl GlassBroken(ObjectMaster* a1)
 	ObjectMaster* v7; // [esp+Ch] [ebp+4h]
 
 	v2 = a1->Data1.Entity;
-	if (!v2->field_6)
+	if (!v2->Timer)
 	{
 		v3 = (NJS_OBJECT*)a1->field_4C;
 		/*v2->Position.x = v3[2].pos[0] + v2->Position.x;
@@ -93,15 +93,15 @@ void __cdecl GlassBroken(ObjectMaster* a1)
 		a1->DisplaySub = DrawGlass;
 	}
 	if (v2->Index == 2
-		|| (v7 = (ObjectMaster*)(unsigned __int16)v2->field_6,
+		|| (v7 = (ObjectMaster*)(unsigned __int16)v2->Timer,
 			v4 = (double)(int)v7,
 			v5 = v4 < v2->Scale.z,
 			v6 = v4 == v2->Scale.z,
-			v2->field_6 = (WORD)v7 + 1,
+			v2->Timer = (WORD)v7 + 1,
 			!v5 && !v6))
 	{
 		a1->MainSub = ByeByeGlass;
-		v2->field_6 = 0;
+		v2->Timer = 0;
 	}
 }
 
@@ -123,7 +123,7 @@ void __cdecl BreakGlass(ObjectMaster* a1, signed int timer)
 
 	v2 = a1;
 	v3 = a1->Data1.Entity;
-	v4 = v3->field_6 == 0;
+	v4 = v3->Timer == 0;
 
 	for (int i = 0; i < LengthOfArray(SH_GlassBroken); i++) {
 		v13[i] = SH_GlassBroken[i]->getmodel();
@@ -161,8 +161,8 @@ void __cdecl BreakGlass(ObjectMaster* a1, signed int timer)
 		v2 = a1;
 	}
 	v10 = v3->Index;
-	++v3->field_6;
-	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->field_6 > timer) || isSonicBouncing() && IsPlayerInsideSphere(&v3->Position, 20))
+	++v3->Timer;
+	if (v10 == 2 || (AddToCollisionList(a1), (unsigned __int16)v3->Timer > timer) || isSonicBouncing() && SH_IsPlayerInsideSphere(&v3->Position, 20))
 	{	
 		Play3DSound_Pos(sound_SHByeGlass, &v3->Position, 0, 0, 70);
 		UpdateSetDataAndDelete(a1);
@@ -201,36 +201,36 @@ void __cdecl SH_GlassMain(ObjectMaster* a1)
 	{
 		Status = v1->Status;
 		v3 = v1->Rotation.z;
-		if ((Status & 0x20) != 0 && !v3 || (Status & 0x10) != 0 && v3 || isSonicBouncing() && IsPlayerInsideSphere(&v1->Position, 20))
+		if ((Status & 0x20) != 0 && !v3 || (Status & 0x10) != 0 && v3 || isSonicBouncing() && SH_IsPlayerInsideSphere(&v1->Position, 20))
 		{
 			v1->Status = Status & 0xFFCF;
 			a1->MainSub = LoadBreakGlass;
 			v1->Index = 2;
 			soundID = 95;
-			v1->field_6 = 0;
+			v1->Timer = 0;
 			Play3DSound_Pos(sound_SHGlass, &v1->Position, 0, 0, 70);
 			return;
 
 		}
 		v4 = v1->Collision;
 		curFlag = v4->Flag;
-		if ((curFlag & 1) != 0 || (v1->Status & 0x10) != 0 || isSonicBouncing() && IsPlayerInsideSphere(&v1->Position, 20))
+		if ((curFlag & 1) != 0 || (v1->Status & 0x10) != 0 || isSonicBouncing() && SH_IsPlayerInsideSphere(&v1->Position, 20))
 		{
 			v4->Flag &= 0xFFFEu;
 			v1->Status &= 0xFFCF;
-			if (++v1->field_6 > 5u)
+			if (++v1->Timer > 5u)
 			{
 				a1->MainSub = LoadBreakGlass;
 				v1->Index = 1;
 				soundID = 94;
-				v1->field_6 = 0;
+				v1->Timer = 0;
 				Play3DSound_Pos(sound_SHGlass, &v1->Position, 0, 0, 70);
 				return;
 			}
 		}
 		else
 		{
-			v1->field_6 = 0;
+			v1->Timer = 0;
 		}
 
 		AddToCollisionList(a1);

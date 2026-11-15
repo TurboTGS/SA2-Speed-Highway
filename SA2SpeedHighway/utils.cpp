@@ -50,7 +50,7 @@ void __cdecl EnemyBounceThing(unsigned __int8 playerID, float speedX, float spee
 				newSpeed.x = speedX;
 				newSpeed.z = speedZ;
 
-				PConvertVector_G2P(data1, &newSpeed);
+				CalcVector_PlayerRotInverse(data1, &newSpeed);
 
 				if (newSpeed.x <= 0.001 && newSpeed.x >= -0.001)
 				{
@@ -100,7 +100,7 @@ void ObjectSetupInput(EntityData1* twp, EntityData2* mwp)
 	}
 }
 
-int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
+int SH_IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 {
 	int player; // esi
 	EntityData1* v3; // eax
@@ -332,7 +332,7 @@ void DeleteSetHandler()
 
 void DeleteSETObjects()
 {
-	for (int i = 0; i < ObjectLists_Length; ++i)
+	for (int i = 0; i < (int)ObjectLists.size(); ++i)
 	{
 		ObjectMaster* obj = ObjectLists[i];
 		ObjectMaster* obj_orig = obj;
@@ -592,10 +592,10 @@ int __cdecl DoRotationStuff(unsigned __int8 a1, int a2, int a3, int a4)
 
 void ResetMaterialColorOffset()
 {
-	GlobalMatColorR = 0.0f;
-	GlobalMatColorG = 0.0f;
-	GlobalMatColorB = 0.0f;
-	GlobalMatColorA = 0.0f;
+	nj_constant_material_.r = 0.0f;
+	nj_constant_material_.g = 0.0f;
+	nj_constant_material_.b = 0.0f;
+	nj_constant_material_.a = 0.0f;
 	return;
 }
 
@@ -629,7 +629,7 @@ void __cdecl dothedash(unsigned __int8 playerID, NJS_VECTOR* _speed, Rotation* a
 	wtf_z = _speed->z;
 	result.y = _speed->y;
 	result.z = wtf_z;
-	PConvertVector_P2G(data1, &result);
+	CalcVector_PlayerRot(data1, &result);
 	data2->spd = result;
 }
 
@@ -640,7 +640,7 @@ void __cdecl DoThatThingWhereYouGetCloseAndItLightsUp(EntityData1* a1, unsigned 
 	if ((a2 & (unsigned __int16)(1 << GetCharacterID(0))) != 0)
 	{
 		a1a.a = 0.0;
-		if (IsPlayerInsideSphere(&a1->Position, 20.0))
+		if (SH_IsPlayerInsideSphere(&a1->Position, 20.0))
 		{
 			a1a.r = 0.5;
 			a1a.g = 0.5;
@@ -652,7 +652,7 @@ void __cdecl DoThatThingWhereYouGetCloseAndItLightsUp(EntityData1* a1, unsigned 
 			a1a.g = 0.0;
 			a1a.b = 0.0;
 		}
-		SetMaterialColor(a1a.a, a1a.r, a1a.g, a1a.b);
+		SetMaterial(a1a.a, a1a.r, a1a.g, a1a.b);
 	}
 }
 
@@ -680,7 +680,7 @@ void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent
 			if (childData)
 			{
 				childData->Status = things[i].status;
-				njCalcPoint(&things[i].pos_probably, &a3, CURRENT_MATRIX);
+				njCalcVector(&things[i].pos_probably, &a3, CURRENT_MATRIX);
 				njAddVector(&childData->Position, &a3);
 
 				childData->Rotation.x = things[i].rotation.x + entity->Rotation.x;
@@ -696,9 +696,9 @@ void __cdecl Load_MultipleChildObjects(ObjectThing* things, ObjectMaster* parent
 
 
 void SetCameraPos(float x, float y, float z) {
-	CameraData.Position.x = x;
-	CameraData.Position.y = y;
-	CameraData.Position.z = z;
+	CameraData[0].location.pos.x = x;
+	CameraData[0].location.pos.y = y;
+	CameraData[0].location.pos.z = z;
 	return;
 }
 

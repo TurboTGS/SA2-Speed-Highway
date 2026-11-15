@@ -21,7 +21,7 @@ float floatWriteIDK3 = 0.0;
 
 void Heli_ApplyPositionStuff(RotInfo* dataNewRot, EntityData1* v2) {
 	int v25;
-	v25 = (unsigned __int16)v2->field_6 + dataNewRot->info01;
+	v25 = (unsigned __int16)v2->Timer + dataNewRot->info01;
 	v2->Position.y = v2->Scale.z + v2->Position.y;
 	dataNewRot->info01 = v25;
 }
@@ -56,9 +56,9 @@ void HeliWriteSub(EntityData1* a1, ObjectMaster* a2)
 	dataNewRot = (RotInfo*)a2->field_4C;
 
 	v2 = a2->Data1.Entity;
-	delta_z = CameraData.Position.z - v2->Position.z;
-	delta_y = CameraData.Position.y - v2->Position.y;
-	delta_x = CameraData.Position.x - v2->Position.x;
+	delta_z = CameraData[0].location.pos.z - v2->Position.z;
+	delta_y = CameraData[0].location.pos.y - v2->Position.y;
+	delta_x = CameraData[0].location.pos.x - v2->Position.x;
 	square_mag = delta_y * delta_y + delta_z * delta_z + delta_x * delta_x;
 
 	if (sqrt(square_mag) < 1000.0)
@@ -216,12 +216,12 @@ void HeliPosCopyPlayer(EntityData1* data, EntityData1* P1)
 }
 
 
-void HelicoFollowPath(LoopHead* a1, EntityData1* a2, pathinfo* a3) {
+void HelicoFollowPath(LoopHead* a1, EntityData1* a2, PathInfo* a3) {
 
 	__int16 getRotY; // [esp-14h] [ebp-14h]
 
 	a3->onpathpos = a2->Scale.x;
-	GetStatusOnPath(a1, a3);
+	GetPathStatus(a1, a3);
 	HeliAngY_Spd = a2->Rotation.y;
 	Floatidk1 = a3->pos.x;
 	Floatidk2 = a3->pos.y;
@@ -258,7 +258,7 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 	double v23; // st7
 	int v24; // edx
 	bool v25; // zf
-	pathinfo heliPath = {}; // [esp-4Ch] [ebp-CCh] BYREF
+	PathInfo heliPath = {}; // [esp-4Ch] [ebp-CCh] BYREF
 
 	int v29; // [esp-40h] [ebp-C0h]
 	int v30; // [esp-3Ch] [ebp-BCh]
@@ -281,7 +281,7 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 			&& MainCharObj1[0]->Position.x < 3500.0
 			&& MainCharObj1[0]->Position.z > 1220.0
 			&& MainCharObj1[0]->Position.z < 1600.0) {
-			v5 = Data->field_6;
+			v5 = Data->Timer;
 			if ((unsigned __int16)v5 >= 0xF00u)
 			{
 				if (Data->Scale.x >= 30.0)
@@ -299,7 +299,7 @@ void __cdecl SH_Helico_Main(ObjectMaster* a1)
 			}
 			else
 			{
-				Data->field_6 = v5 + 64;
+				Data->Timer = v5 + 64;
 			}
 		}
 		break;
@@ -531,7 +531,7 @@ void Init_Helico(ObjectMaster* a1) {
 	v1->Scale.z = 0.0;
 	v1->Scale.x = 0.0;
 	v1->Scale.y = 0.0;
-	v1->field_6 = 0;
+	v1->Timer = 0;
 	// v1->timer = (int*)2048;
 	getrot->info01 = 0.0; //CharIndex
 	getrot->info02 = 0.0; //LoopData
@@ -584,7 +584,7 @@ void __cdecl OHelib(ObjectMaster* obj)
 	getrot->info02 = 0.0;
 	getrot->info03 = 2048;
 	obj->field_4C = getrot;
-	v1->field_6 = 4096;
+	v1->Timer = 4096;
 	InitCollision(obj, &HeliCol, 1, 4u);
 	obj->DeleteSub = j_DeleteChildObjects;
 	obj->MainSub = OHelia_Main;
@@ -602,7 +602,7 @@ void __cdecl OHelia(ObjectMaster* obj)
 	getrot->info02 = 0.0;
 	getrot->info03 = 2048;
 	obj->field_4C = getrot;
-	v1->field_6 = 4096;
+	v1->Timer = 4096;
 	InitCollision(obj, &HeliCol, 1, 4u);
 	obj->DeleteSub = j_DeleteChildObjects;
 	obj->MainSub = OHelia_Main;

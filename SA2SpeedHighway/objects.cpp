@@ -372,7 +372,7 @@ void __cdecl OHighRaftA(ObjectMaster* a1)
 		{
 			if (data->Action == 1)
 			{
-				if (IsPlayerInsideSphere(&data->Position, 20))
+				if (SH_IsPlayerInsideSphere(&data->Position, 20))
 				{
 					data->Status | 0x100;
 				}

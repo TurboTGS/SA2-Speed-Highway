@@ -132,7 +132,7 @@ void __cdecl TurnAsi_Trigger(ObjectMaster* obj)
 
 void Asi_ApplyScaleStuff(EntityData1* dataParent, turnasiwk* parRot) {
 	parRot->Speed = 0;
-	dataParent->field_6 = 0;
+	dataParent->Timer = 0;
 	dataParent->Scale.y = 5.0;
 	dataParent->Scale.z = 0.0;
 	return;
@@ -161,7 +161,7 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 	player->Position.y = child->Data1.Entity->Position.y - 7.5;
 	player->Position.z = child->Data1.Entity->Position.z;
 
-	int timer = ++data->field_6;
+	int timer = ++data->Timer;
 
 	if (info->Speed < 4.0f && data->Scale.x != 5.0f)
 	{
@@ -280,7 +280,7 @@ void Turnasi_SendSub(EntityData1* data, turnasiwk* info, ObjectMaster* child)
 
 			njPushUnitMatrix();
 			njRotateY_(CURRENT_MATRIX, data->Rotation.y);
-			njCalcPoint(&offset, &output, CURRENT_MATRIX);
+			njCalcVector(&offset, &output, CURRENT_MATRIX);
 			njPopMatrixEx();
 
 			EnemyBounceThing(data->field_2, output.x, output.y, output.z);

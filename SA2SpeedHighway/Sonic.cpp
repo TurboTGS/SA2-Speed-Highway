@@ -12,26 +12,6 @@ enum class Saction {
 	HurtBuilding
 };
 
-static const void* const SonicNactPtr = (void*)0x7220E0;
-int Sonic_CheckNextActions(SonicCharObj2* a1, EntityData1* a2, EntityData2* a3, CharObj2Base* a4) {
-
-	int result;
-
-	__asm
-	{
-		push[a4]
-		push[a3]
-		push[a2]
-		mov eax, [a1]
-		// Call your __cdecl function here:
-		call SonicNactPtr
-		add esp, 12
-		mov result, eax
-	}
-
-	return result;
-}
-
 
 
 void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, SonicCharObj2* SonicCO2) {
@@ -45,7 +25,7 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 	switch ((Saction)data1->Action) {
 
 	case Saction::RunBuilding:
-		if (Sonic_CheckNextActions(SonicCO2, data1, data2, co2)) {
+		if (Sonic_CheckNextAction(SonicCO2, data1, data2, co2)) {
 			return;
 		}
 
@@ -73,7 +53,7 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 		return;
 	case Saction::RollBuilding:
 
-		if (Sonic_CheckNextActions(SonicCO2, data1, data2, co2)) {
+		if (Sonic_CheckNextAction(SonicCO2, data1, data2, co2)) {
 			return;
 		}
 
@@ -88,7 +68,7 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 			}
 			else if (Action_Pressed[co2->PlayerNum]) {
 				data1->Action = (char)Saction::RunBuilding;
-				PhysicsAndAnimCheck(co2, data1);
+				Player_SetRunAnimBySpeed(co2, data1);
 				data1->Status &= 0xDAFFu;
 			}
 
@@ -96,7 +76,7 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 
 		return;
 	case Saction::FallBuilding:
-		if (Sonic_CheckNextActions(SonicCO2, data1, data2, co2) || (data1->Status & (Status_OnObjectColli | Status_Ground)) == 0) {
+		if (Sonic_CheckNextAction(SonicCO2, data1, data2, co2) || (data1->Status & (Status_OnObjectColli | Status_Ground)) == 0) {
 
 			if (co2->Speed.x >= 0)
 				co2->Speed.x = -1;
@@ -107,22 +87,22 @@ void __cdecl Sonic_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj
 		data1->Rotation.x = data2R->ang_aim.x;
 		data1->Rotation.z = data2R->ang_aim.z;
 		data1->Action = (char)Saction::RunBuilding;
-		PhysicsAndAnimCheck(co2, data1);
+		Player_SetRunAnimBySpeed(co2, data1);
 
 		return;
 	case Saction::JumpBuilding:
-		if (Sonic_CheckNextActions(SonicCO2, data1, data2, co2) || (data1->Status & (Status_OnObjectColli | Status_Ground)) == 0) {
+		if (Sonic_CheckNextAction(SonicCO2, data1, data2, co2) || (data1->Status & (Status_OnObjectColli | Status_Ground)) == 0) {
 			return;
 		}
 
 		data1->Rotation.x = data2R->ang_aim.x;
 		data1->Rotation.z = data2R->ang_aim.z;
 		data1->Action = (char)Saction::RunBuilding;
-		PhysicsAndAnimCheck(co2, data1);
+		Player_SetRunAnimBySpeed(co2, data1);
 
 		return;
 	case Saction::HurtBuilding:
-		if (Sonic_CheckNextActions(SonicCO2, data1, data2, co2)) {
+		if (Sonic_CheckNextAction(SonicCO2, data1, data2, co2)) {
 			return;
 		}
 
@@ -170,7 +150,7 @@ void Sonic_Main_r(ObjectMaster* obj)
 		}
 		else {
 			PResetPositionForBuilding(data1, data2R, co2);
-			PhysicsAndAnimCheck(co2, data1);
+			Player_SetRunAnimBySpeed(co2, data1);
 		}
 
 

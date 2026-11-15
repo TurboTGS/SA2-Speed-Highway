@@ -27,7 +27,7 @@ void FreeCraneModels()
 }
 
 void CheckCraneColli(EntityData1* data) {
-	if (IsPlayerInsideSphere(&data->Position, 570.0f))
+	if (SH_IsPlayerInsideSphere(&data->Position, 570.0f))
 	{
 		data->Status |= 0x100u;
 	}
@@ -70,8 +70,8 @@ void __cdecl SHDispCage(ObjectMaster* a1)
 	Angle v2; // eax
 
 	v1 = a1->Data1.Entity;
-	njControl3D_Backup();
-	SetMaterialColor(1, 1, 1, 1);
+	SaveControl3D();
+	SetMaterial(1, 1, 1, 1);
 	njPushMatrix(0);
 	njTranslateV(0, &v1->Position);
 	v2 = v1->Rotation.y;
@@ -85,7 +85,7 @@ void __cdecl SHDispCage(ObjectMaster* a1)
 	DrawObject((NJS_OBJECT*)a1->field_4C);
 	njPopMatrix(1u);
 	ResetMaterialColorOffset();
-	njControl3D_Restore();
+	LoadControl3D();
 }
 
 void Cage_UpdatePlayerPos(ObjectMaster* obj, float x, float y, float z) {
@@ -215,13 +215,13 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 
 		if (SHCage_isPlayerOnPlatform(obj))
 		{
-			v8 = data->field_6;
-			data->field_6 = v8 + 1;
+			v8 = data->Timer;
+			data->Timer = v8 + 1;
 			if ((unsigned __int16)v8 > 120u)
 			{
 				data->Action = 4;
 				data->Index = 1;
-				data->field_6 = 0;
+				data->Timer = 0;
 				//SwitchSignal(data);
 			}
 		}
@@ -256,7 +256,7 @@ void __cdecl SHExecCage(ObjectMaster* obj)
 		if (SHCage_isPlayerOnPlatform(obj))
 		{
 			data->Action = 1;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		break;
 	default:

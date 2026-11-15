@@ -69,7 +69,9 @@ StartPositionSADX SADXStartArray[] = {
 };
 
 
-DataPointer(int, byte_1A558A0, 0x1934B90);
+// The bits of player 1's checkpoint position x (0x1934B90): 0 while no
+// checkpoint was reached.
+static int CheckpointXBits() { return *reinterpret_cast<const int*>(&CheckpointRecords[0].position.x); }
 
 void SetLevelPosAndRot(int playerID) {
 
@@ -90,7 +92,7 @@ void SetLevelPosAndRot(int playerID) {
 		}
 	}
 
-	if (!byte_1A558A0) {
+	if (!CheckpointXBits()) {
 		MovePlayersToStartPos(pos, rot);
 	}
 

@@ -25,14 +25,14 @@ void CheckAndKillPlayer(ObjectMaster* obj) {
 		if (CurrentAct == 0) {
 			if (MainCharObj1[0]->Position.y < -3176)
 			{
-				BGCheckAndKillPlayer(0);
+				GamePlayerMissed_Load(0);
 				data->Action = 50;
 			}
 		}
 		else if (CurrentAct == 2) {
 			if (MainCharObj1[0]->Position.y < -100)
 			{
-				BGCheckAndKillPlayer(0);
+				GamePlayerMissed_Load(0);
 				data->Action = 50;
 			}
 		}

@@ -1,138 +1,29 @@
 #include "pch.h"
 #include "PhysicsFunction.h"
 
-//SA2 Functions
-
-static const void* const SCheckJumpPtr = (void*)0x721C00;
-static inline signed int Sonic_CheckJumpASM(EntityData1* data, CharObj2Base* a2, SonicCharObj2* a3)
-{
-    signed int result;
-    __asm
-    {
-        push[a3]
-        push[a2]
-        mov eax, data // a1
-
-        // Call your __cdecl function here:
-        call SCheckJumpPtr
-
-        add esp, 8 // a3
-        mov result, eax
-    }
-}
-
-signed int Sonic_CheckJump(EntityData1* data, CharObj2Base* a2, SonicCharObj2* a3) {
-    return Sonic_CheckJumpASM(data, a2, a3);
-}
-
-static const void* const PGetAccelAirPtr = (void*)0x45D770;
-static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2* data2)
-{
-    __asm
-    {
-        push[data2]
-        mov eax, [co2]
-        mov ecx, a1 // a1
-
-        // Call your __cdecl function here:
-        call PGetAccelAirPtr
-
-        add esp, 4 // a3
-    }
-}
+//SA2 Functions (the mod loader's: TurboTGS/sa2-mod-loader, turbo)
 
 void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2* data2) {
-    return PlayerGetAccelerationAirASM(a1, co2, data2);
-}
-
-static const void* const PResetAnglePtr = (void*)0x460260;
-static inline void PlayerResetAngleASM(EntityData1* a1, CharObj2Base* co2)
-{
-    __asm
-    {
-        mov ebx, [co2]
-        mov eax, [a1] // a1
-        call PResetAnglePtr
-    }
+    PGetAccelerationAir(a1, co2, data2);
 }
 
 void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2)
 {
-    return PlayerResetAngleASM(a1, co2);
-}
-
-
-static const void* const PGetSpeedPtr = (void*)0x460860;
-static inline void PlayerGetSpeedASM(EntityData1* a1, CharObj2Base* co2, EntityData2* data2)
-{
-    __asm
-    {
-        push[data2] // a3
-        mov ebx, co2 // a2
-        mov eax, a1 // a1
-
-        // Call your __cdecl function here:
-        call PGetSpeedPtr
-
-        add esp, 4 // a3
-    }
+    PResetAngle(a1, co2);
 }
 
 void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2* data2)
 {
-    PlayerGetSpeedASM(a1, co2, data2);
-}
-
-static const void* const PSetPositionptr = (void*)0x4616E0;
-static inline int PSetPositionASM(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
-{
-    int result;
-    __asm
-    {
-        push[a3]
-        push[a2]
-        mov eax, [a1]
-        call PSetPositionptr
-        add esp, 8
-        mov result, eax
-    }
-    return result;
+    PGetSpeed(a1, co2, data2);
 }
 
 int PlayerSetPosition(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
 {
-    return PSetPositionASM(a1, a2, a3);
-}
-
-static const void* const sub_469050Ptr = (void*)0x469050;
-static inline void PResetPositionASM(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
-{
-    __asm
-    {
-        push[a3] // a3
-        mov ebx, a2 // a2
-        mov eax, a1 // a1
-        call sub_469050Ptr
-        add esp, 4 // a2
-    }
+    return PSetPosition(a1, a2, a3);
 }
 
 void PlayerResetPosition(EntityData1* a1, EntityData2* a2, CharObj2Base* a3) {
-    PResetPositionASM(a1, a2, a3);
-}
-
-
-static const void* const PadAdjustYS = (void*)0x460610;
-static inline void PAdjustAngleYS(__int16 ax0, EntityData1* a1, CharObj2Base* a3)
-{
-    __asm
-    {
-        push[a3]
-        push[a1]
-        mov ax, [ax0]
-        call PadAdjustYS
-        add esp, 8
-    }
+    PResetPosition(a1, a2, a3);
 }
 
 void __cdecl PAdjustAngleYQ(EntityData1* twp, CharObj2Base* pwp, int angy)
@@ -148,9 +39,9 @@ void __cdecl PAdjustAngleYQ(EntityData1* twp, CharObj2Base* pwp, int angy)
     v10.x = pwp->Speed.x;
     v10.y = spd_y;
     v10.z = spd_z;
-    PConvertVector_P2G(twp, &v10);
+    CalcVector_PlayerRot(twp, &v10);
     twp->Rotation.y = AdjustAngle(twp->Rotation.y, angy, 0x2000);
-    PConvertVector_G2P(twp, &v10);
+    CalcVector_PlayerRotInverse(twp, &v10);
     v8 = v10.y;
     v9 = v10.z;
     pwp->Speed.x = v10.x;
@@ -227,7 +118,7 @@ void __fastcall PGetAccelerationForBuilding(EntityData1* twp, EntityData2_R* mwp
         v10 = (float)(v36.x - pwp->PhysData.Weight);
         v36.y = v36.y - pwp->PhysData.Weight;
         v36.x = v10;
-        PConvertVector_G2P(twp, &v36);
+        CalcVector_PlayerRotInverse(twp, &v36);
         v11 = GetAnalog(twp, pwp, 0, 0);
         v12 = twp->Status;
         if ((v12 & 1) != 0 || pwp->Speed.x <= (double)pwp->PhysData.SpeedMaxH)
@@ -275,10 +166,10 @@ void __fastcall PGetAccelerationForBuilding(EntityData1* twp, EntityData2_R* mwp
             else
                 v21 = (float)((float)v19 - (float)3072.0);
             v22 = (int)(atan2(v21, v20) * 65536.0 * 0.1591549762031479);
-            if (CameraData.Rotation.z < 0x4000)
-                v23 = 0x8000 - CameraData.Rotation.y - v22;
+            if (CameraData[0].location.ang.z < 0x4000)
+                v23 = 0x8000 - CameraData[0].location.ang.y - v22;
             else
-                v23 = v22 - CameraData.Rotation.y;
+                v23 = v22 - CameraData[0].location.ang.y;
             v24 = SubAngle(v23, 0);
             if (v24 <= 2048)
             {
@@ -291,7 +182,7 @@ void __fastcall PGetAccelerationForBuilding(EntityData1* twp, EntityData2_R* mwp
             }
             mwp->ang_aim.y = (unsigned __int16)v23;
 
-            PAdjustAngleYS((unsigned __int16)v23, twp, pwp);
+            Player_TurnToAngleBySpeed((unsigned __int16)v23, twp, pwp);
         }
         else
         {
@@ -359,7 +250,7 @@ void __cdecl PResetAngleForBuilding(EntityData1* a1, EntityData2_R* _18, CharObj
     float v6; // ecx
     float v7; // edx
     __int16 v8; // [esp-24h] [ebp-34h]
-    Vector3 a2; // [esp+4h] [ebp-Ch] BYREF
+    NJS_VECTOR a2; // [esp+4h] [ebp-Ch] BYREF
 
     v3 = a3->PhysData.DashSpeed;
     a2.x = a3->Speed.x;
@@ -371,12 +262,12 @@ void __cdecl PResetAngleForBuilding(EntityData1* a1, EntityData2_R* _18, CharObj
 
     if (v3 * v3 >= result)
     {
-        PConvertVector_P2G(a1, &a2);
+        CalcVector_PlayerRot(a1, &a2);
         v5 = BAMS_SubWrap(a1->Rotation.x, 0, 2048);
         v8 = a1->Rotation.z;
         a1->Rotation.x = v5;
         a1->Rotation.z = BAMS_SubWrap(v8, 0xC000u, 2048);
-        PConvertVector_G2P(a1, &a2);
+        CalcVector_PlayerRotInverse(a1, &a2);
         v6 = a2.y;
         v7 = a2.z;
         a3->Speed.x = a2.x;
@@ -392,14 +283,14 @@ void __cdecl PResetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharO
     double v5; // st7
     double v6; // st6
     double v7; // st7
-    Vector3 a2a; // [esp+4h] [ebp-Ch] BYREF
+    NJS_VECTOR a2a; // [esp+4h] [ebp-Ch] BYREF
 
     v3 = a2->spd.y;
     v4 = a2->spd.z;
     a2a.x = a2->spd.x;
     a2a.y = v3;
     a2a.z = v4;
-    PConvertVector_G2P(a1, &a2a);
+    CalcVector_PlayerRotInverse(a1, &a2a);
     if (a2a.x <= 0.001 && a2a.x >= -0.001)
     {
         a2a.x = 0.0;
@@ -518,10 +409,10 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     int v40; // [esp+20h] [ebp-3Ch]
     int v41; // [esp+24h] [ebp-38h]
     int v42; // [esp+28h] [ebp-34h]
-    Vector3 a2a; // [esp+2Ch] [ebp-30h] BYREF
-    Vector3 a3a; // [esp+38h] [ebp-24h] BYREF
-    Vector3 a1a; // [esp+44h] [ebp-18h] BYREF
-    Vector3 v1; // [esp+50h] [ebp-Ch] BYREF
+    NJS_VECTOR a2a; // [esp+2Ch] [ebp-30h] BYREF
+    NJS_VECTOR a3a; // [esp+38h] [ebp-24h] BYREF
+    NJS_VECTOR a1a; // [esp+44h] [ebp-18h] BYREF
+    NJS_VECTOR v1; // [esp+50h] [ebp-Ch] BYREF
     char v47; // [esp+60h] [ebp+4h]
 
     v4 = a1->Collision;
@@ -573,7 +464,7 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
         return v36;
     }
     a1->Status = v10 & 0xFFFC;
-    v11 = (csts*)v9->csts;
+    v11 = v9->DynColInfo;
     v47 = 0;
     njPushMatrixEx();
     njUnitMatrix_();
@@ -599,18 +490,18 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     v11->angx = v14;
     v11->angz = a1->Rotation.z;
    // njCalcVector(0, &a2a, &v11->tnorm);
-    njCalcPoint(&a2a, &v11->tnorm, CURRENT_MATRIX);
+    njCalcVector(&a2a, &v11->tnorm, CURRENT_MATRIX);
     a2a.y = v9->PhysData.Height * 0.5;
     a2a.z = 0.0;
     a2a.x = 0.0;
     //njCalcVector(0, &a2a, &a3a);
-    njCalcPoint(&a2a, &a3a, CURRENT_MATRIX);
+    njCalcVector(&a2a, &a3a, CURRENT_MATRIX);
     v15 = v9->PhysData.Height * 0.5 - v9->PhysData.FloorGrip * 0.5;
     a2a.z = 0.0;
     a2a.x = 0.0;
     a2a.y = v15;
     //njCalcVector(0, &a2a, &v1);
-    njCalcPoint(&a2a, &v1, CURRENT_MATRIX);
+    njCalcVector(&a2a, &v1, CURRENT_MATRIX);
     njPopMatrix(1u);
     v11->radius = v9->PhysData.Height * 0.5;
     v11->pos.x = v1.x + a1->Position.x;
@@ -620,7 +511,7 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
     CL_ColPolListUpNear(v11);
     v16 = 0;
     v37 = 0;
-    if ((__int16)ActiveLandTableColCount <= 0)
+    if ((__int16)LandColList_Count <= 0)
     {
         a1->Position.x = a1->Position.x + v6->spd.x;
         a1->Position.y = v6->spd.y + a1->Position.y;
@@ -740,7 +631,7 @@ int PSetPositionForBuilding(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3
             }
         }
         v16 = (unsigned __int16)++v37;
-    }     while ((unsigned __int16)v37 < (__int16)ActiveLandTableColCount);
+    }     while ((unsigned __int16)v37 < (__int16)LandColList_Count);
     if (v47 != 1)
     {
         a1->Position.x = a1->Position.x + v6->spd.x;

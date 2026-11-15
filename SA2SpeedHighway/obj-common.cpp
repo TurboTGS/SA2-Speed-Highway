@@ -79,7 +79,7 @@ static void CalcRingPosCircle(EntityData1* data, NJS_VECTOR* pos, int index)
 	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
 	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	njCalcPoint(&offset, pos, _nj_current_matrix_ptr_);
+	njCalcVector(&offset, pos, _nj_current_matrix_ptr_);
 	njAddVector(pos, &data->Position);
 	njPopMatrixEx();
 }
@@ -93,7 +93,7 @@ static void CalcRingPosLine(EntityData1* data, NJS_VECTOR* pos, int index)
 	njRotateZ(_nj_current_matrix_ptr_, data->Rotation.z);
 	njRotateX(_nj_current_matrix_ptr_, data->Rotation.x);
 	njRotateY(_nj_current_matrix_ptr_, data->Rotation.y);
-	njCalcPoint(&offset, pos, _nj_current_matrix_ptr_);
+	njCalcVector(&offset, pos, _nj_current_matrix_ptr_);
 	njAddVector(pos, &data->Position);
 	njPopMatrixEx();
 }
@@ -338,11 +338,11 @@ void __cdecl Beetle_Attack2(ObjectMaster* a1)
     float v32; // [esp+18h] [ebp-44h]
     float v33; // [esp+1Ch] [ebp-40h]
     float v34; // [esp+1Ch] [ebp-40h]
-    Vector3 vs; // [esp+20h] [ebp-3Ch] BYREF
-    Vector3 a2; // [esp+2Ch] [ebp-30h] BYREF
-    Vector3 a3; // [esp+38h] [ebp-24h] BYREF
-    Vector3 vd; // [esp+44h] [ebp-18h] BYREF
-    Vector3 v39; // [esp+50h] [ebp-Ch] BYREF
+    NJS_VECTOR vs; // [esp+20h] [ebp-3Ch] BYREF
+    NJS_VECTOR a2; // [esp+2Ch] [ebp-30h] BYREF
+    NJS_VECTOR a3; // [esp+38h] [ebp-24h] BYREF
+    NJS_VECTOR vd; // [esp+44h] [ebp-18h] BYREF
+    NJS_VECTOR v39; // [esp+50h] [ebp-Ch] BYREF
     float a1a; // [esp+60h] [ebp+4h]
     ObjectMaster* a1b; // [esp+60h] [ebp+4h]
     ObjectMaster* a1c; // [esp+60h] [ebp+4h]
@@ -364,7 +364,7 @@ void __cdecl Beetle_Attack2(ObjectMaster* a1)
         v3->LoopData.SInteger = 0x3F800000;
         a1a = (unsigned __int64)((double)rand() * 0.000030517578 * 360.0 * 65536.0 * 0.002777777777777778);
         v3->timer = (int*)0x3F800000;
-        v3->field_6 = 0;
+        v3->Timer = 0;
         v3->CharIndex.Single = (float)SLODWORD(a1a);
         v3->NextAction = 0;
         v3->Id = 11;
@@ -402,7 +402,7 @@ void __cdecl Beetle_Attack2(ObjectMaster* a1)
             }
         }
         v10 = v3->Rotation.y;
-        ++v3->field_6;
+        ++v3->Timer;
         v11 = njSin(v10);
         v12 = v3->Rotation.y;
         v3->Scale.x = v11 * 0.30000001;
@@ -456,7 +456,7 @@ void __cdecl Beetle_Attack2(ObjectMaster* a1)
         }
         else
         {
-            v3->Position.y = (v3->Scale.y - (double)(unsigned __int16)v3->field_6 * 0.33333334)
+            v3->Position.y = (v3->Scale.y - (double)(unsigned __int16)v3->Timer * 0.33333334)
                 * 0.33333334
                 + v3->Position.y;
         }
@@ -467,7 +467,7 @@ void __cdecl Beetle_Attack2(ObjectMaster* a1)
         if (*v2 >= (double)v3->Position.y)
         {
             v14 = v3->LoopData.Single;
-            v3->field_6= 0;
+            v3->Timer= 0;
             v3->LoopData.Single = v14 - 0.039999999;
             v3->Scale.y = v3->Scale.y - 0.28;
         }
@@ -529,7 +529,7 @@ void __cdecl Beetle_Attack2(ObjectMaster* a1)
             v3->Position.x = v3->Scale.x + v3->Position.x;
             v3->Position.z = v3->Position.z + v3->Scale.z;
             AddToCollisionList(a1);
-            ++v3->field_6;
+            ++v3->Timer;
             v3->Position.y = a1c;
             v3->Position.x = v32;
             v3->Position.z = v34;
@@ -537,7 +537,7 @@ void __cdecl Beetle_Attack2(ObjectMaster* a1)
             {
                 sub_44F960(a1, v3->LoopData.Single);
             }
-            if (v3->field_6 >= 0x64u)
+            if (v3->Timer >= 0x64u)
             {
                 v3->Action = 3;
             }

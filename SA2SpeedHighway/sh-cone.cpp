@@ -59,7 +59,7 @@ void __cdecl Cone_Main(ObjectMaster* a1)
 					v2->Scale.x = v13 * 1.5;
 					v2->Scale.y = v13 * 0.66666669;
 				}
-				v2->field_6 = (unsigned __int16)(-16384
+				v2->Timer = (unsigned __int16)(-16384
 					- (unsigned __int64)(atan2(
 						v2->Position.z - v3->z,
 						v2->Position.x - v3->x)
@@ -70,7 +70,7 @@ void __cdecl Cone_Main(ObjectMaster* a1)
 		}
 		else
 		{
-			v4 = v2->field_6;
+			v4 = v2->Timer;
 			v2->Position.x = v2->Position.x - njSin(v4) * v2->Scale.x;
 			v2->Position.y = v2->Scale.y + v2->Position.y;
 			v2->Position.z = njCos(v4) * v2->Scale.x + v2->Position.z;

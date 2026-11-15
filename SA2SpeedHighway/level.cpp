@@ -73,11 +73,11 @@ void FreeModelBG_SH()
 void SpeedHighway_Display(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
-	NJS_VECTOR* position = &CameraScreensInfoArray[CurrentScreen]->pos;
+	NJS_VECTOR* position = &pCameraLocations[CurrentScreen]->pos;
 
-	njControl3D_Backup();
-	njControl3D_Add(NJD_CONTROL_3D_NO_CLIP_CHECK);
-	njControl3D_Remove(NJD_CONTROL_3D_DEPTH_QUEUE);
+	SaveControl3D();
+	OnControl3D(NJD_CONTROL_3D_NO_CLIP_CHECK);
+	OffControl3D(NJD_CONTROL_3D_DEPTH_QUEUE);
 
 	switch (CurrentAct)
 	{
@@ -116,7 +116,7 @@ void SpeedHighway_Display(ObjectMaster* obj)
 		break;
 	}
 
-	njControl3D_Restore();
+	LoadControl3D();
 }
 
 void __cdecl BgExec_SH(ObjectMaster* a1)
@@ -163,9 +163,9 @@ void __cdecl BgExec_SH(ObjectMaster* a1)
 		}
 		break;
 	case 2:
-		if (++data->field_6 == 360) {
+		if (++data->Timer == 360) {
 			PlaySoundProbably(sound_SHPeople, 0, 0, 80);
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		break;
 	}
@@ -296,13 +296,13 @@ static void __cdecl SpeedHighway_Init()
 	DropRingsFunc_ptr = DropRings;
 	DisplayItemBoxItemFunc_ptr = DisplayItemBoxItem;
 
-	SetDrawingPlanes(-3.0f, -65535.0f);
+	___njClipZ(-3.0f, -65535.0f);
 
 	// Chaos Drive Function Pointers
-	dword_1DE4680 = (void*)0x6B6C20;
-	dword_1DE4684 = (void*)0x6BBAE0;
-	dword_1DE4688 = (void*)0x6BC450;
-	dword_1DE468C = (void*)0x6BC4A0;
+	ChaosDriveFuncs[0] = (void*)0x6B6C20;
+	ChaosDriveFuncs[1] = (void*)0x6BBAE0;
+	ChaosDriveFuncs[2] = (void*)0x6BC450;
+	ChaosDriveFuncs[3] = (void*)0x6BC4A0;
 
 	// Get starting act
 	CurrentAct = 0;

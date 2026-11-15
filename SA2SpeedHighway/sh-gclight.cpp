@@ -19,7 +19,7 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	float XDist; // [esp+0h] [ebp-30h]
 	float YDist; // [esp+4h] [ebp-2Ch]
 	float ZDist; // [esp+8h] [ebp-28h]
-	Vector3 a2; // [esp+14h] [ebp-1Ch] BYREF
+	NJS_VECTOR a2; // [esp+14h] [ebp-1Ch] BYREF
 	NJS_ARGB a1a; // [esp+20h] [ebp-10h] BYREF
 
 	data = a1->Data1.Entity;
@@ -38,7 +38,7 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	DrawObject(SH_Gclight->getmodel());
 	njPopMatrix(1u);
 	a1a.a = 1.0;
-	ColorIDK = njSin((unsigned __int64)((double)(unsigned __int16)data->field_6 * 65536.0 * 0.002777777777777778)) * 0.80000001;
+	ColorIDK = njSin((unsigned __int64)((double)(unsigned __int16)data->Timer * 65536.0 * 0.002777777777777778)) * 0.80000001;
 	if (ColorIDK < 0.0)
 	{
 		ColorIDK = -ColorIDK;
@@ -46,7 +46,7 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	a1a.b = ColorIDK;
 	a1a.g = ColorIDK;
 	a1a.r = ColorIDK;
-	SetMaterialColor(0.4f, a1a.r, a1a.g, a1a.b);
+	SetMaterial(0.4f, a1a.r, a1a.g, a1a.b);
 
 	njPushMatrix(_nj_unit_matrix_);
 	njRotateZXY(&data->Rotation);
@@ -60,19 +60,19 @@ void __cdecl Draw_OClight(ObjectMaster* a1)
 	YDist = a2.y + data->Position.y;
 	XDist = a2.x + pos->x;
 	njTranslate(0, XDist, YDist, ZDist);
-	camData = &CameraData;
-	camRotY = CameraData.Rotation.y;
+	camData = &CameraData[0];
+	camRotY = CameraData[0].location.ang.y;
 	if (camRotY)
 	{
 		njRotateY(0, (unsigned __int16)camRotY);
 	}
-	v12 = camData->Rotation.x;
+	v12 = camData->location.ang.x;
 	if (v12)
 	{
 		njRotateX(0, (unsigned __int16)v12);
 	}
 
-	NJDrawSprite3D(0, &OGclight_Sprite, NJD_SPRITE_ALPHA | NJD_SPRITE_COLOR | NJD_SPRITE_VFLIP);
+	njDrawSprite3D(0, &OGclight_Sprite, NJD_SPRITE_ALPHA | NJD_SPRITE_COLOR | NJD_SPRITE_VFLIP);
 
 	njPopMatrix(1u);
 	ResetMaterialColorOffset();
@@ -102,7 +102,7 @@ void __cdecl GClight_main(ObjectMaster* obj)
 		{
 			if (data->Action == 1)
 			{
-				data->field_6 += 4;
+				data->Timer += 4;
 				getCol = data->Collision;
 				getFlag = getCol->Flag;
 				if ((getFlag & 1) != 0)

@@ -69,8 +69,8 @@ void Bell_Main(ObjectMaster* obj) {
 
 	}
 	else {
-		if (++v3->field_6 > 100) {
-			v3->field_6 = 0;
+		if (++v3->Timer > 100) {
+			v3->Timer = 0;
 			v3->Action = 0;
 		}
 	}
@@ -97,7 +97,7 @@ void __cdecl OHwBell(ObjectMaster* obj)
 	v3->Rotation.z = 0;
 	v3->Rotation.x = 0;
 	v3->Index = 120;
-	v3->field_6 = 120;
+	v3->Timer = 120;
 	v3->Rotation.y = v1->Rotation.y;
 	InitCollision(v2, &Col_Bell02, 1, 4u);
 

@@ -4,16 +4,6 @@
 
 int CurrentAct = 0;
 
-static const void* const resetCPptr = (void*)0x43E380;
-static inline void CP_ResetPosition(int a1)
-{
-	__asm
-	{
-		mov eax, [a1]
-		call resetCPptr
-	}
-}
-
 
 void CheckAndSetControl(ObjectMaster* obj) {
 
@@ -22,7 +12,7 @@ void CheckAndSetControl(ObjectMaster* obj) {
 	for (int i = 0; i < MAXPLAYERS; i++) {
 		switch (v1->Action) {
 		case 0:
-			v1->field_6 = 0;
+			v1->Timer = 0;
 
 			ControllerEnabled[i] = false;
 			if (MainCharObj2[i]) {
@@ -33,7 +23,7 @@ void CheckAndSetControl(ObjectMaster* obj) {
 			}
 			break;
 		case 1:
-			if (++v1->field_6 == 100) {
+			if (++v1->Timer == 100) {
 				ControllerEnabled[i] = true;
 				v1->Action = 2;
 			}
@@ -90,7 +80,7 @@ void SetSonicRunningOnBulding(ObjectMaster* a1)
 			}
 			break;
 		case 2:
-			if (++data->field_6 == 60) {
+			if (++data->Timer == 60) {
 				ControllerEnabled[i] = 1;
 				data->Action = 3;
 			}
@@ -122,7 +112,7 @@ static void act3Trigger(ObjectMaster* obj)
 		{
 			if (player->Position.x >= 280.0f && player->Position.y <= -19000.0f)
 			{
-				CP_ResetPosition(i);
+				Checkpoint_Clear(i);
 				data->Action = 4;
 				LoadSHAct(2);
 			}
@@ -146,7 +136,7 @@ static void act2Trigger(ObjectMaster* obj)
 
 			if (sqrtf(v3) < 60.0f)
 			{
-				CP_ResetPosition(i);
+				Checkpoint_Clear(i);
 				data->Action = 1;
 				LoadSHAct(1);
 			}

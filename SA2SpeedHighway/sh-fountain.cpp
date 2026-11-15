@@ -67,8 +67,8 @@ void ExecFountain(EntityData1* data)
 		switch (data->NextAction)
 		{
 		case 0:
-			getTimer = data->field_6;
-			data->field_6 = getTimer + 1;
+			getTimer = data->Timer;
+			data->Timer = getTimer + 1;
 			if ((unsigned __int16)getTimer < 100u)
 			{
 				v2 = (double)rand() * 0.000030517578 * 0.0099999998 - 0.0049999999 + data->Scale.y;
@@ -84,7 +84,7 @@ void ExecFountain(EntityData1* data)
 			}
 			else
 			{
-				data->field_6 = 0;
+				data->Timer = 0;
 				data->NextAction = 1;
 			}
 			return;
@@ -99,12 +99,12 @@ void ExecFountain(EntityData1* data)
 			}
 			return;
 		case 2:
-			timer2 = data->field_6;
-			data->field_6 = timer2 + 1;
+			timer2 = data->Timer;
+			data->Timer = timer2 + 1;
 
 			if ((unsigned __int16)timer2 >= 0x64u)
 			{
-				data->field_6 = 0;
+				data->Timer = 0;
 				data->NextAction = 3;
 				return;
 			}
@@ -262,7 +262,7 @@ void Fountain_Main(ObjectMaster* obj) {
 		{
 			PushPlayer(obj);
 			data->Action = 2;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		ExecFountain(data);
 		Ftn_ExpandAndConstrict(data);
@@ -278,7 +278,7 @@ void Fountain_Main(ObjectMaster* obj) {
 		if (sqrt(result2) > 15.0 || posY2 <= 0.0 || data->Scale.y * 100.0 < posY2)
 		{
 			data->Action = 1;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		else
 		{

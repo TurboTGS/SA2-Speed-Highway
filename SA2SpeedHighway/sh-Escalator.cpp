@@ -31,7 +31,7 @@ void Escalator_Main(ObjectMaster* obj) {
 		data->Action = 1;
 	}
 	else {
-		if (IsPlayerInsideSphere(&data->Position, 100))
+		if (SH_IsPlayerInsideSphere(&data->Position, 100))
 		{
 			(data->Status) |= 100u;
 		}

@@ -85,11 +85,11 @@ void SH_GenericNeonDisplay(ObjectMaster* a2)
 	int v6; // ecx
 
 	data = a2->Data1.Entity;
-	timer = data->field_6;
+	timer = data->Timer;
 
-	if (data->field_6 > 240)
+	if (data->Timer > 240)
 	{
-		data->field_6 = 0;
+		data->Timer = 0;
 	}
 
 	njSetTexture(&highwayObj2_TEXLIST);
@@ -104,7 +104,7 @@ void SH_GenericNeon(ObjectMaster* a1)
 {
 	if (!ClipSetObject(a1))
 	{
-		++a1->Data1.Entity->field_6;
+		++a1->Data1.Entity->Timer;
 	}
 }
 

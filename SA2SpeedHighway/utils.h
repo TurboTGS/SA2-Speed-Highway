@@ -21,7 +21,7 @@ void LoadLevelLayout(ObjectListHead* objlist, const char* s, const char* u);
 void LoadLevelMusic(const char* name);
 void SetStartEndPoints(const StartPosition* start, const LevelEndPosition* start2pIntro, const StartPosition* end, const LevelEndPosition* missionend);
 void MovePlayersToStartPos(NJS_VECTOR pos, int yrot);
-int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
+int SH_IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 signed int __cdecl GetPlayerRunningSpeed(unsigned __int8 a1, Float a2);
 void ObjectSetupInput(EntityData1* twp, EntityData2* mwp);
 NJS_OBJECT* DynCol_AddFromObject(ObjectMaster* obj, NJS_OBJECT* object, NJS_VECTOR* position, Angle rotY, int flags);
