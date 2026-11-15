@@ -42,9 +42,10 @@ extern "C"
 		d.endPosition = SpeedHighway_EndPos();
 		d.intro2P = SpeedHighway_2PIntro();
 		d.end23 = SpeedHighway_EndPos23();
-		// API v4: the 1P Stage Select's Custom page. Played as Radical
-		// Highway's character (Shadow); missions 1 (goal) and 2 (100 rings).
-		d.character = -1;
+		// API v4: the 1P Stage Select's Custom page. Played as Sonic (as in
+		// SADX; -1 would be Radical Highway's Shadow); missions 1 (goal) and
+		// 2 (100 rings).
+		d.character = Characters_Sonic;
 		d.missions = 2;
 		// API v6: rank requirements for D, C, B, A (example values).
 		// Older 2P mods ignore them (they go by the descriptor's size).
